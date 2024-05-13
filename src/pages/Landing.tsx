@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
-import Button from 'react-native-ui-lib/button';
 import LoaderScreen from 'react-native-ui-lib/loaderScreen';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { useUser } from '../services/user';
-
 import { shellStyles } from '../styles';
+import { RootStackParamList } from './navigation';
 
-export default function Landing() {
+type Props = NativeStackScreenProps<RootStackParamList, 'Landing'>;
+
+export default function Landing({ navigation }: Props) {
   const { apiToken, loading: userLoading, setApiToken } = useUser();
 
   useEffect(() => {
@@ -15,7 +18,7 @@ export default function Landing() {
       console.log('TODO: Fetch user/handshake');
       setApiToken('');
     } else {
-      console.log('go to setup');
+      navigation.replace('TokenSetup', {});
     }
   }, [apiToken]);
 
@@ -23,7 +26,6 @@ export default function Landing() {
     <View style={shellStyles.container}>
       <StatusBar style="auto" />
       {userLoading && <LoaderScreen />}
-      <Button label={'Press'} size={Button.sizes.large} />
     </View>
   );
 }

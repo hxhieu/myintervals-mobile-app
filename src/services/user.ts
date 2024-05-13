@@ -6,6 +6,11 @@ interface UserServiceHook {
   loading: boolean;
   apiToken: string | null;
   setApiToken(token: string): Promise<void>;
+  verifyApiToken(token: string): Promise<boolean>;
+}
+
+function timeout(delay: number) {
+  return new Promise((r) => setTimeout(r, delay));
 }
 
 const useUser = (): UserServiceHook => {
@@ -22,14 +27,23 @@ const useUser = (): UserServiceHook => {
   }, []);
 
   const setApiToken = async (token: string) => {
+    // Save to store
     await setItemAsync(API_TOKEN_STORE_KEY, token);
     setApiTokenState(token);
+  };
+
+  const verifyApiToken = async (token: string) => {
+    setLoading(true);
+    await timeout(2000);
+    setLoading(false);
+    return false;
   };
 
   return {
     loading,
     apiToken: apiTokenState,
     setApiToken,
+    verifyApiToken,
   };
 };
 
