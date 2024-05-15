@@ -1,16 +1,15 @@
 import { getItemAsync, setItemAsync } from 'expo-secure-store';
 import { useEffect, useState } from 'react';
-const API_TOKEN_STORE_KEY = 'API_TOKEN';
+import { Me } from '../api/Me';
+import { executeApi } from './api-wrapper';
+import { API_TOKEN_STORE_KEY } from './store';
+import { GetMeResponse, GetUserResponse } from '../models';
 
 interface UserServiceHook {
   loading: boolean;
   apiToken: string | null;
-  setApiToken(token: string): Promise<void>;
-  verifyApiToken(token: string): Promise<boolean>;
-}
-
-function timeout(delay: number) {
-  return new Promise((r) => setTimeout(r, delay));
+  saveApiToken(token: string): Promise<void>;
+  verifyApiToken(token: string): Promise<GetUserResponse | undefined>;
 }
 
 const useUser = (): UserServiceHook => {
@@ -26,23 +25,33 @@ const useUser = (): UserServiceHook => {
       });
   }, []);
 
-  const setApiToken = async (token: string) => {
+  const saveApiToken = async (token: string) => {
     // Save to store
     await setItemAsync(API_TOKEN_STORE_KEY, token);
     setApiTokenState(token);
   };
 
-  const verifyApiToken = async (token: string) => {
+  const verifyApiToken = async (
+    token: string,
+  ): Promise<GetUserResponse | undefined> => {
     setLoading(true);
-    await timeout(2000);
-    setLoading(false);
-    return false;
+    const me = await executeApi<GetMeResponse>(
+      Me,
+      'getMe',
+      undefined,
+      async () => {
+        setLoading(false), token;
+      },
+      token,
+    );
+
+    return me?.me[0];
   };
 
   return {
     loading,
     apiToken: apiTokenState,
-    setApiToken,
+    saveApiToken,
     verifyApiToken,
   };
 };

@@ -1,0 +1,4278 @@
+---
+swagger: "2.0"
+info:
+  description: RESTfully access data from your Intervals account.
+  version: "1"
+  title: Intervals API
+host: api.myintervals.com
+schemes:
+- https
+security:
+- basicAuth: []
+paths:
+  /client:
+    get:
+      tags:
+      - client
+      summary: Get one or more clients
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the list based on a client's \"localid,\" which is the number that appears associated with the client in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: active
+        in: query
+        description: Limits the list to clients who are either active or inactive.
+        required: false
+        type: boolean
+      - name: search
+        in: query
+        description: "Limits the list to clients who match the search string. Searches client name, description and localid."
+        required: false
+        type: string
+      - name: projectsonly
+        in: query
+        description: Limits the list to clients who have active projects only.
+        required: false
+        type: boolean
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, localid, name, datecreated"
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return clients starting from the nth client.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of clients returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - client
+      summary: Add a client
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: client
+        required: false
+        schema:
+          $ref: '#/definitions/client'
+      responses:
+        "200":
+          description: Success
+  /client/{id}/:
+    get:
+      tags:
+      - client
+      summary: Retrieve a client by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - client
+      summary: Update a client by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: client
+        required: false
+        schema:
+          $ref: '#/definitions/client'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - client
+      summary: Delete a client
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /contactdescriptor:
+    get:
+      tags:
+      - contactdescriptor
+      summary: Get one or more contactdescriptors
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: contacttypeid
+        in: query
+        description: Each contact type has various descriptors. This limits the list by the contact type of the ID passed.
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /contacttype:
+    get:
+      tags:
+      - contacttype
+      summary: Get one or more contacttypes
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: Success
+  /document:
+    get:
+      tags:
+      - document
+      summary: Get one or more documents
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: public
+        in: query
+        description: Limits the list to only documents visible to executive-level users.
+        required: false
+        type: boolean
+      - name: taskid
+        in: query
+        description: "Limits the list to documents that are part of the task having the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: milestoneid
+        in: query
+        description: "Limits the list to documents that are part of the milestone having the ID passed, either belonging to the milestone itself or belonging to a task that is part of that milestone. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: queueid
+        in: query
+        description: "Limits the list to documents that are part of the work request having the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to documents belonging to the client with the ID passed; belonging to projects, tasks or milestones that are part of that client. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to documents belonging to the project with the ID passed, either belonging to the project itself or belonging to tasks or milestones that are part of that project. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: moduleid
+        in: query
+        description: "Limits the list to documents belonging to tasks that have the module with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: "Limits the list to documents originally uploaded by the person with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: search
+        in: query
+        description: "Limits the list to documents that match the search string.. Searches title, notes, filename and tags."
+        required: false
+        type: string
+      - name: projectactive
+        in: query
+        description: Limits the list to documents belonging to either active or inactive projects.
+        required: false
+        type: boolean
+      - name: taskassignedorownedby
+        in: query
+        description: "Excludes task documents in which the person with the ID passed is not a task assignee, owner or follower."
+        required: false
+        type: integer
+      - name: tag
+        in: query
+        description: Limits the list to documents tagged with the tag passed.
+        required: false
+        type: string
+      - name: datebegin
+        in: query
+        description: Limits the list to documents uploaded on or after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateend
+        in: query
+        description: Limits the list to documents uploaded on or before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, personid, title, public, datemodified, active."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return documents starting from the nth document.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of documents returned in the response.
+        required: false
+        type: integer
+      - name: id
+        in: query
+        description: "A workaround to requesting the member resource, as the collection resource is much more detailed."
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /document/{id}/:
+    get:
+      tags:
+      - document
+      summary: Retrieve a document by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /document/{documentid}/download/:
+    get:
+      tags:
+      - document
+      summary: Download a document
+      description: Allows you to download the most recent version of this document.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: documentid
+        in: path
+        description: The id of the document being downloaded.
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /expense:
+    get:
+      tags:
+      - expense
+      summary: Get one or more expenses
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: projectid
+        in: query
+        description: "Limits the list to expenses belonging to the projects with the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: "Limits the list to expenses added by the persons with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to expenses belonging to a project belonging to the clients with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: managerid
+        in: query
+        description: "Limits the list to expenses belonging to a project managed by the persons with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: datebegin
+        in: query
+        description: Limits the list to expenses having a date on or after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateend
+        in: query
+        description: Limits the list to expenses having a date on or before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: date
+        in: query
+        description: Limits the list to expenses having the date passed.
+        required: false
+        type: string
+        format: date
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, projectid, date, expense, fee, note, personid, project, client, and person"
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return expenses starting from the nth expense.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of expenses returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - expense
+      summary: Add a expense
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: expense
+        required: false
+        schema:
+          $ref: '#/definitions/expense'
+      responses:
+        "200":
+          description: Success
+  /expense/{id}/:
+    get:
+      tags:
+      - expense
+      summary: Retrieve a expense by id.
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - expense
+      summary: Update a expense by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: expense
+        required: false
+        schema:
+          $ref: '#/definitions/expense'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - expense
+      summary: Delete a expense
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /group:
+    get:
+      tags:
+      - group
+      summary: Get one or more groups
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: Success
+  /group/{id}/:
+    get:
+      tags:
+      - group
+      summary: Retrieve a group by id.
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /invoice:
+    get:
+      tags:
+      - invoice
+      summary: Get one or more invoices
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the list based on a invoice's \"localid,\" which is the number that appears associated with the invoice in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to invoices belonging to the client with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to invoices belonging to the project with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: datebegin
+        in: query
+        description: Limits the list to expenses having a date on or after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateend
+        in: query
+        description: Limits the list to expenses having a date on or before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: status
+        in: query
+        description: Useful for specifying specific invoice statuses. Can be either "outstanding" or "paid".
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: "Limits the list to invoices that match the search string.. Searches title, description, localid, purchase order and address fields."
+        required: false
+        type: string
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, projectid, date, title, description, localid, purchaseorder, project, client, datepaid, subtotal, total, payments, balance, datedue, and daysoverdue."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return invoices starting from the nth invoice.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of invoices returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - invoice
+      summary: Add a invoice
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: invoice
+        required: false
+        schema:
+          $ref: '#/definitions/invoice'
+      responses:
+        "200":
+          description: Success
+  /invoice/{id}/:
+    get:
+      tags:
+      - invoice
+      summary: Retrieve a invoice by id.
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - invoice
+      summary: Update a invoice by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: invoice
+        required: false
+        schema:
+          $ref: '#/definitions/invoice'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - invoice
+      summary: Delete a invoice
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /invoiceitem:
+    get:
+      tags:
+      - invoiceitem
+      summary: Get one or more invoiceitems
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: invoiceid
+        in: query
+        description: Limits the list to invoice items belonging to the invoice with the ID passed.
+        required: true
+        type: integer
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, invoiceid, name, description, quantity, rate, and amount."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return invoiceitems starting from the nth invoiceitem.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of invoiceitems returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - invoiceitem
+      summary: Add a invoiceitem
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: invoiceitem
+        required: false
+        schema:
+          $ref: '#/definitions/invoiceitem'
+      responses:
+        "200":
+          description: Success
+  /invoiceitem/{id}/:
+    get:
+      tags:
+      - invoiceitem
+      summary: Retrieve a invoiceitem by id.
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - invoiceitem
+      summary: Update a invoiceitem by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: invoiceitem
+        required: false
+        schema:
+          $ref: '#/definitions/invoiceitem'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - invoiceitem
+      summary: Delete a invoiceitem
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /invoicenote:
+    get:
+      tags:
+      - invoicenote
+      summary: Get one or more invoicenotes
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: invoiceid
+        in: query
+        description: Limits the list to invoice notes belonging to the invoice with the ID passed.
+        required: true
+        type: integer
+      - name: authorid
+        in: query
+        description: Limits the list to invoice notes created by the person with the ID passed.
+        required: false
+        type: integer
+      - name: offset
+        in: query
+        description: Return invoicenotes starting from the nth invoicenote.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of invoicenotes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - invoicenote
+      summary: Add a invoicenote
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: invoicenote
+        required: false
+        schema:
+          $ref: '#/definitions/invoicenote'
+      responses:
+        "200":
+          description: Success
+  /invoicenote/{id}/:
+    get:
+      tags:
+      - invoicenote
+      summary: Retrieve a invoicenote by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - invoicenote
+      summary: Update a invoicenote by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: invoicenote
+        required: false
+        schema:
+          $ref: '#/definitions/invoicenote'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - invoicenote
+      summary: Delete a invoicenote
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /invoiceterm:
+    get:
+      tags:
+      - invoiceterm
+      summary: Get one or more invoiceterms
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: Success
+  /invoiceterm/{id}/:
+    get:
+      tags:
+      - invoiceterm
+      summary: Retrieve a invoiceterm by id.
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /me:
+    get:
+      tags:
+      - me
+      summary: View your account
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: Success
+  /me/{id}/:
+    get:
+      tags:
+      - me
+      summary: Retrieve a me by id.
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /milestone:
+    get:
+      tags:
+      - milestone
+      summary: Get one or more milestones
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the task list based on a task's \"localid,\" which is the number that appears associated with the task in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: search
+        in: query
+        description: "Limits the list to milestones that match the search string. Searches title, description, notes, and localid."
+        required: false
+        type: string
+      - name: clientid
+        in: query
+        description: "Limits the list to milestones that belong to the client corresponding to the ID(s) passed. You can pass a value of -1 for projects that have no client. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to milestones that belong to the project corresponding to the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: ownerid
+        in: query
+        description: "Limits the list to milestones that belong to the owner corresponding to the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: hasmilestonerelation
+        in: query
+        description: "Limits the list to milestones that are either owned by, or contains tasks which the people with the IDs specified are assigned, own, or are followers of. For restricted resources (users who can only see tasks that they own or that are assigned to them), this value will be set to the user by default. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: complete
+        in: query
+        description: Limits the list to milestones that are either complete or incomplete.
+        required: false
+        type: boolean
+      - name: dateduebegin
+        in: query
+        description: Limits the list to milestones that have a due date on or after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datedueend
+        in: query
+        description: Limits the list to milestones that have a due date on or before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: title
+        in: query
+        description: Limits the list to milestones with titles containing the search string.
+        required: false
+        type: string
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, localid, projectid, clientid, datedue, title, description, progress, estimate, actual, owner."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return milestones starting from the nth milestone.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of milestones returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - milestone
+      summary: Add a milestone
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: milestone
+        required: false
+        schema:
+          $ref: '#/definitions/milestone'
+      responses:
+        "200":
+          description: Success
+  /milestone/{id}/:
+    get:
+      tags:
+      - milestone
+      summary: Retrieve a milestone by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - milestone
+      summary: Update a milestone by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: milestone
+        required: false
+        schema:
+          $ref: '#/definitions/milestone'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - milestone
+      summary: Delete a milestone
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /milestonenote:
+    get:
+      tags:
+      - milestonenote
+      summary: Get one or more milestonenotes
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: milestoneid
+        in: query
+        required: true
+        type: integer
+      - name: offset
+        in: query
+        description: Return milestonenotes starting from the nth milestonenote.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of milestonenotes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - milestonenote
+      summary: Add a milestonenote
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: milestonenote
+        required: false
+        schema:
+          $ref: '#/definitions/milestonenote'
+      responses:
+        "200":
+          description: Success
+  /milestonenote/{id}/:
+    get:
+      tags:
+      - milestonenote
+      summary: Retrieve a milestonenote by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - milestonenote
+      summary: Update a milestonenote by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: milestonenote
+        required: false
+        schema:
+          $ref: '#/definitions/milestonenote'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - milestonenote
+      summary: Delete a milestonenote
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /module:
+    get:
+      tags:
+      - module
+      summary: Get one or more modules
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: active
+        in: query
+        required: false
+        type: boolean
+      - name: offset
+        in: query
+        description: Return modules starting from the nth module.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of modules returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /module/{id}/:
+    get:
+      tags:
+      - module
+      summary: Retrieve a module by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /payment:
+    get:
+      tags:
+      - payment
+      summary: Get one or more payments
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: clientid
+        in: query
+        description: Limits the list to payments belonging to the client with the ID passed.
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: Limits the list to payments belonging to the client with the ID passed.
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: "Limits the list to payments posted by the persons with the ID passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: date
+        in: query
+        description: Limits the list to payments having the date passed.
+        required: false
+        type: string
+        format: date
+      - name: typeid
+        in: query
+        description: "Limits the list to payments having the payment type of the ID passed. For more information, see the paymenttype resource."
+        required: false
+        type: integer
+      - name: invoiceid
+        in: query
+        description: Limits the list to payments belonging to the invoice with the ID passed.
+        required: false
+        type: integer
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, projectid, date, amount, typeid, reference, note, invoiceid, type, project, and client."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return payments starting from the nth payment.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of invoices returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - payment
+      summary: Add a payment
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: payment
+        required: false
+        schema:
+          $ref: '#/definitions/payment'
+      responses:
+        "200":
+          description: Success
+  /payment/{id}/:
+    get:
+      tags:
+      - payment
+      summary: Retrieve a payment by id.
+      description: "Available to Administrator, Manager, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - payment
+      summary: Update a payment by id.
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: payment
+        required: false
+        schema:
+          $ref: '#/definitions/payment'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - payment
+      summary: Delete a payment
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /paymenttype:
+    get:
+      tags:
+      - paymenttype
+      summary: Get one or more paymenttypes
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters: []
+      responses:
+        "200":
+          description: Success
+  /paymenttype/{id}/:
+    get:
+      tags:
+      - paymenttype
+      summary: Retrieve a paymenttype by id.
+      description: Available to  user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /person:
+    get:
+      tags:
+      - person
+      summary: Get one or more persons
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the list based on a person's \"localid,\" which is the number that appears associated with the person in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: username
+        in: query
+        description: Limits the list to people whose usernames match the search string.
+        required: false
+        type: string
+      - name: email
+        in: query
+        description: Limits the list to people whose emails match the search string.
+        required: false
+        type: string
+      - name: firstname
+        in: query
+        description: Limits the list to people whose first names match the search string.
+        required: false
+        type: string
+      - name: lastname
+        in: query
+        description: Limits the list to people whose last names match the search string.
+        required: false
+        type: string
+      - name: excludegroupids
+        in: query
+        description: "Excludes people from the list who fall in the group IDs submitted. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to people who have access to the project IDs submitted. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to people who are associated with the ID of this client. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectclientid
+        in: query
+        description: "Limits the list to people who have access to projects that belong to the client IDs submitted. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: search
+        in: query
+        description: "Limits the list to people who match the search string. Searches firstname, lastname, client, username, notes and contact info."
+        required: false
+        type: string
+      - name: active
+        in: query
+        description: Limits the list to people who are either active or inactive.
+        required: false
+        type: boolean
+      - name: groupid
+        in: query
+        description: Limits the list to people who are in the group of the ID submitted.
+        required: false
+        type: integer
+      - name: allprojects
+        in: query
+        description: Limits the list to people who should be added to all future projects.
+        required: false
+        type: boolean
+      - name: restricttasks
+        in: query
+        description: Limits the list to people who are restricted to only tasks to which they own or have been assigned.
+        required: false
+        type: boolean
+      - name: offset
+        in: query
+        description: Return people starting from the nth person.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of people returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - person
+      summary: Add a person
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: person
+        required: false
+        schema:
+          $ref: '#/definitions/person'
+      responses:
+        "200":
+          description: Success
+  /person/{id}/:
+    get:
+      tags:
+      - person
+      summary: Retrieve a person by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - person
+      summary: Update a person by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: person
+        required: false
+        schema:
+          $ref: '#/definitions/person'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - person
+      summary: Delete a person
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /personcontact:
+    get:
+      tags:
+      - personcontact
+      summary: Get one or more personcontacts
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: personid
+        in: query
+        required: true
+        type: integer
+      - name: contacttypeid
+        in: query
+        required: false
+        type: integer
+      - name: contactdescriptorid
+        in: query
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - personcontact
+      summary: Add a personcontact
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: personcontact
+        required: false
+        schema:
+          $ref: '#/definitions/personcontact'
+      responses:
+        "200":
+          description: Success
+  /personcontact/{id}/:
+    get:
+      tags:
+      - personcontact
+      summary: Retrieve a personcontact by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - personcontact
+      summary: Update a personcontact by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: personcontact
+        required: false
+        schema:
+          $ref: '#/definitions/personcontact'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - personcontact
+      summary: Delete a personcontact
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /project:
+    get:
+      tags:
+      - project
+      summary: Get one or more projects
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the list based on a project's \"localid,\" which is the number that appears associated with the project in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to projects belonging to the client whose ID was passed. Passing a value of -1 returns projects that do not belong to any client. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: managerid
+        in: query
+        description: "Limits the list to projects managed by the person whose ID was passed. Passing a value of -1 returns projects that do not have any manager. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: name
+        in: query
+        description: Limits the list to projects with name matching the search string.
+        required: false
+        type: string
+      - name: datestart
+        in: query
+        description: Limits the list to projects beginning on this date.
+        required: false
+        type: string
+        format: date
+      - name: dateend
+        in: query
+        description: Limits the list to projects ending on this date.
+        required: false
+        type: string
+        format: date
+      - name: search
+        in: query
+        description: "Limits the list to propjects that match the search string. Searches name, description and client and localid."
+        required: false
+        type: string
+      - name: active
+        in: query
+        description: Limits the list to active or inactive projects only.
+        required: false
+        type: boolean
+      - name: billable
+        in: query
+        description: Limits the list to billable or unbillable projects only.
+        required: false
+        type: boolean
+      - name: personid
+        in: query
+        description: Limits the list to only projects to which the person ID has access.
+        required: false
+        type: integer
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, localid, clientid, managerid, name, datestart, dateend, billable"
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return projects starting from the nth project.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of projects returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - project
+      summary: Add a project
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: project
+        required: false
+        schema:
+          $ref: '#/definitions/project'
+      responses:
+        "200":
+          description: Success
+  /project/{id}/:
+    get:
+      tags:
+      - project
+      summary: Retrieve a project by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - project
+      summary: Update a project by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: project
+        required: false
+        schema:
+          $ref: '#/definitions/project'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - project
+      summary: Delete a project
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /projectmodule:
+    get:
+      tags:
+      - projectmodule
+      summary: Get one or more projectmodules
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: projectid
+        in: query
+        description: "Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: active
+        in: query
+        description: "This filter will automatically be applied to resource users, as they cannot see inactive modules."
+        required: false
+        type: boolean
+      - name: personid
+        in: query
+        required: false
+        type: integer
+      - name: offset
+        in: query
+        description: Return projectmodules starting from the nth projectmodule.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of projectmodules returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - projectmodule
+      summary: Add a projectmodule
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: projectmodule
+        required: false
+        schema:
+          $ref: '#/definitions/projectmodule'
+      responses:
+        "200":
+          description: Success
+  /projectmodule/{id}/:
+    get:
+      tags:
+      - projectmodule
+      summary: Retrieve a projectmodule by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - projectmodule
+      summary: Update a projectmodule by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: projectmodule
+        required: false
+        schema:
+          $ref: '#/definitions/projectmodule'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - projectmodule
+      summary: Delete a projectmodule
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /projectnote:
+    get:
+      tags:
+      - projectnote
+      summary: Get one or more projectnotes
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the list based on a project note's \"localid,\" which is the number that appears associated with the note in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Restricts the list to project notes belonging to projects for the clients corresponding to the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Restricts the list to project notes belonging to projects corresponding to the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: authorid
+        in: query
+        description: "Restricts the list to project notes created by the person corresponding to the ID(s) passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: title
+        in: query
+        required: false
+        type: string
+      - name: search
+        in: query
+        description: Limits the list to project notes that match the search string. Searches title and note* (* only searched when project note is not secure).
+        required: false
+        type: string
+      - name: noteid
+        in: query
+        required: false
+        type: integer
+      - name: offset
+        in: query
+        description: Return projectnotes starting from the nth projectnote.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of projectnotes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - projectnote
+      summary: Add a projectnote
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: projectnote
+        required: false
+        schema:
+          $ref: '#/definitions/projectnote'
+      responses:
+        "200":
+          description: Success
+  /projectnote/{id}/:
+    get:
+      tags:
+      - projectnote
+      summary: Retrieve a projectnote by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - projectnote
+      summary: Update a projectnote by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: projectnote
+        required: false
+        schema:
+          $ref: '#/definitions/projectnote'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - projectnote
+      summary: Delete a projectnote
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /projectteam:
+    get:
+      tags:
+      - projectteam
+      summary: Get one or more projectteams
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: projectid
+        in: query
+        description: Limits the list to people belonging to this project.
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - projectteam
+      summary: Add a projectteam
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: projectteam
+        required: false
+        schema:
+          $ref: '#/definitions/projectteam'
+      responses:
+        "200":
+          description: Success
+  /projectteam/{id}/:
+    get:
+      tags:
+      - projectteam
+      summary: Retrieve a projectteam by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - projectteam
+      summary: Update a projectteam by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: projectteam
+        required: false
+        schema:
+          $ref: '#/definitions/projectteam'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - projectteam
+      summary: Delete a projectteam
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /projectworktype:
+    get:
+      tags:
+      - projectworktype
+      summary: Get one or more projectworktypes
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: projectid
+        in: query
+        description: "Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: active
+        in: query
+        description: "This filter will automatically be applied to resource users, as they cannot see inactive modules."
+        required: false
+        type: boolean
+      - name: personid
+        in: query
+        required: false
+        type: integer
+      - name: offset
+        in: query
+        description: Return projectworktypes starting from the nth projectworktype.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of projectworktypes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - projectworktype
+      summary: Add a projectworktype
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: projectworktype
+        required: false
+        schema:
+          $ref: '#/definitions/projectworktype'
+      responses:
+        "200":
+          description: Success
+  /projectworktype/{id}/:
+    get:
+      tags:
+      - projectworktype
+      summary: Retrieve a projectworktype by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - projectworktype
+      summary: Update a projectworktype by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: projectworktype
+        required: false
+        schema:
+          $ref: '#/definitions/projectworktype'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - projectworktype
+      summary: Delete a projectworktype
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /request:
+    get:
+      tags:
+      - request
+      summary: Get one or more requests
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: priorityid
+        in: query
+        description: Limits the list to work requests having this priority.
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: Limits the list to work requests submitted by this person.
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: Limits the list to work requests belonging to this project.
+        required: false
+        type: integer
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, title, date, datedue, personid, person, projectid, project, clientid, client, email, priorityid, priority."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return requests starting from the nth request.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of requests returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - request
+      summary: Add a request
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: request
+        required: false
+        schema:
+          $ref: '#/definitions/request'
+      responses:
+        "200":
+          description: Success
+  /request/{id}/:
+    get:
+      tags:
+      - request
+      summary: Retrieve a request by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - request
+      summary: Update a request by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: request
+        required: false
+        schema:
+          $ref: '#/definitions/request'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - request
+      summary: Delete a request
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /task:
+    get:
+      tags:
+      - task
+      summary: Get one or more tasks
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: localid
+        in: query
+        description: "Restricts the task list based on a task's \"localid,\" which is the number that appears associated with the task in the Intervals application. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: Limits the list to people who have access to the project this task belongs to.
+        required: false
+        type: integer
+      - name: includetimerid
+        in: query
+        description: Retrieves timerid and starttime for the passed-in personid (if present).
+        required: false
+        type: integer
+      - name: assigneeid
+        in: query
+        description: "Limits the list to tasks assigned to this person. To include tasks with no assignee, pass a value of -1. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: followerid
+        in: query
+        description: "Limits the list to tasks followed by this person. To include tasks with no followers, pass a value of -1. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: statusid
+        in: query
+        description: "Limits the list to tasks having this status. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to tasks belonging to this client. To include tasks with no client, pass a value of -1. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to tasks belonging to this project. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: moduleid
+        in: query
+        description: "Limits the list to tasks having this module. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: milestoneid
+        in: query
+        description: "Limits the list to tasks belonging to this milestone. To include tasks with no milestone, pass a value of -1. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: title
+        in: query
+        description: Limits the list to tasks containing this string in the title.
+        required: false
+        type: string
+      - name: dateopen
+        in: query
+        description: Limits the list to tasks opening on this specific date.
+        required: false
+        type: string
+        format: date
+      - name: dateopenbegin
+        in: query
+        description: Limits the list to tasks starting after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateopenend
+        in: query
+        description: Limits the list to tasks starting before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datedue
+        in: query
+        description: Limits the list to tasks due on this specific date.
+        required: false
+        type: string
+        format: date
+      - name: dateduebegin
+        in: query
+        description: Limits the list to tasks due after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datedueend
+        in: query
+        description: Limits the list to tasks due before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateclosed
+        in: query
+        description: Limits the list to tasks closed on this specific date.
+        required: false
+        type: string
+        format: date
+      - name: dateclosedbegin
+        in: query
+        description: Limits the list to tasks closed after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateclosedend
+        in: query
+        description: Limits the list to tasks closed before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datemodifiedbegin
+        in: query
+        description: Limits the list to tasks modified after the date passed.
+        required: false
+        type: string
+        format: date-time
+      - name: datemodifiedend
+        in: query
+        description: Limits the list to tasks modified before the date passed.
+        required: false
+        type: string
+        format: date-time
+      - name: hasduedate
+        in: query
+        description: Limits the list to tasks with or without a due date.
+        required: false
+        type: boolean
+      - name: ownerid
+        in: query
+        description: "Limits the list to tasks owned by this person. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: priorityid
+        in: query
+        description: "Limits the list to tasks having this priority. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: tasklistfilterid
+        in: query
+        description: Limits the list to tasks matching this tasklistfilter.
+        required: false
+        type: integer
+      - name: overdue
+        in: query
+        required: false
+        type: boolean
+      - name: excludeclosed
+        in: query
+        description: Limits the list to tasks that are not closed.
+        required: false
+        type: boolean
+      - name: assignedorownedby
+        in: query
+        description: "[DEPRECATED] Previously limited the list to tasks that are either assigned to or owned by the people specified. Now this filter operates like the 'hastaskrelation' filter, which is described below and includes tasks followed by the people listed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: hastaskrelation
+        in: query
+        description: "Limits the list to tasks that are either assigned to, followed by or owned by the people with the IDs specified. For restricted resources (users who can only see tasks that they own or that are assigned to them), this value will be set to the user by default; anything in the assigneeid or ownerid fields will be overridden. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: search
+        in: query
+        description: "Limits the list to tasks that match the search string. Searches title, summary, request queue title, request queue description, and localid."
+        required: false
+        type: string
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, localid, queueid, assigneeid, statusid, projectid, module, moduleid, title, summary, dateopen, datedue, dateclosed, estimate, ownerid, priorityid, sev.priority, severity, status (returns status alphabetically), status_order (returns status ordered by level of completion), project, client, assignee, milestoneid, milestone, owners."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return tasks starting from the nth task.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of tasks returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - task
+      summary: Add a task
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: task
+        required: false
+        schema:
+          $ref: '#/definitions/task'
+      responses:
+        "200":
+          description: Success
+  /task/{id}/:
+    get:
+      tags:
+      - task
+      summary: Retrieve a task by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - task
+      summary: Update a task by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: task
+        required: false
+        schema:
+          $ref: '#/definitions/task'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - task
+      summary: Delete a task
+      description: "Available to Administrator, Manager user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /tasklistfilter:
+    get:
+      tags:
+      - tasklistfilter
+      summary: Get one or more tasklistfilters
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: offset
+        in: query
+        description: Return tasklistfilters starting from the nth tasklistfilter.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of tasklistfilters returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /tasklistfilter/{id}/:
+    get:
+      tags:
+      - tasklistfilter
+      summary: Retrieve a tasklistfilter by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /tasknote:
+    get:
+      tags:
+      - tasknote
+      summary: Get one or more tasknotes
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: taskid
+        in: query
+        description: "Limits the list to task notes belonging to a task. If not submitted, only last 7 days of task notes created will be returned. Or, use the datemodifiedbegin and datemodifiedend fields to return task notes modified instead of created.  Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: title
+        in: query
+        required: false
+        type: string
+      - name: date
+        in: query
+        description: Limits the list to task notes created on this date.
+        required: false
+        type: string
+        format: date
+      - name: datebegin
+        in: query
+        description: Limits the list to task notes created on or after this date.
+        required: false
+        type: string
+        format: date-time
+      - name: dateend
+        in: query
+        description: Limits the list to task notes created before or on this date.
+        required: false
+        type: string
+        format: date-time
+      - name: datemodifiedbegin
+        in: query
+        description: Limits the list to task notes modified on or after this date.
+        required: false
+        type: string
+        format: date-time
+      - name: datemodifiedend
+        in: query
+        description: Limits the list to task notes modified before or on this date.
+        required: false
+        type: string
+        format: date-time
+      - name: authorid
+        in: query
+        description: "Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: public
+        in: query
+        required: false
+        type: boolean
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, taskid, authorid, date."
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return tasknotes starting from the nth tasknote.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of tasknotes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - tasknote
+      summary: Add a tasknote
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: tasknote
+        required: false
+        schema:
+          $ref: '#/definitions/tasknote'
+      responses:
+        "200":
+          description: Success
+  /tasknote/{id}/:
+    get:
+      tags:
+      - tasknote
+      summary: Retrieve a tasknote by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - tasknote
+      summary: Update a tasknote by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: tasknote
+        required: false
+        schema:
+          $ref: '#/definitions/tasknote'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - tasknote
+      summary: Delete a tasknote
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /taskpriority:
+    get:
+      tags:
+      - taskpriority
+      summary: Get one or more taskprioritys
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: active
+        in: query
+        required: false
+        type: boolean
+      - name: offset
+        in: query
+        description: Return taskpriorities starting from the nth taskpriority.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of taskpriorities returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /taskpriority/{id}/:
+    get:
+      tags:
+      - taskpriority
+      summary: Retrieve a taskpriority by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /taskstatus:
+    get:
+      tags:
+      - taskstatus
+      summary: Get one or more taskstatus
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: active
+        in: query
+        required: false
+        type: boolean
+      - name: offset
+        in: query
+        description: Return taskstatuses starting from the nth taskstatus.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of taskstatuses returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /taskstatus/{id}/:
+    get:
+      tags:
+      - taskstatus
+      summary: Retrieve a taskstatus by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /time:
+    get:
+      tags:
+      - time
+      summary: Get one or more times
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: activeonly
+        in: query
+        description: "If set to true, limits the list to time entries for active projects and people only."
+        required: false
+        type: boolean
+      - name: moduleid
+        in: query
+        description: "Limits the list to time entries belonging to the module whose ID was passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: taskid
+        in: query
+        description: "Limits the list to time entries belonging to the task whose ID was passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: worktypeid
+        in: query
+        description: "Limits the list to time entries belonging to the worktype whose ID was passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        description: "Limits the list to time entries belonging to the person whose ID was passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        description: "Limits the list to time entries belonging to the client whose ID was passed. Passing a value of -1 returns time entries belonging to projects that do not have a client. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        description: "Limits the list to time entries belonging to the project whose ID was passed. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: milestoneid
+        in: query
+        description: "Limits the list to time entries belonging to the milestone whose ID was passed. Passing a value of -1 returns time entries that are not associated with any milestone. Allows multiple values in CSV format (e.g. \"3,5,11,19\")."
+        required: false
+        type: integer
+      - name: date
+        in: query
+        description: Limits the list to time entries occuring on the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datebegin
+        in: query
+        description: Limits the list to time entries occuring after the date passed.
+        required: false
+        type: string
+        format: date
+      - name: dateend
+        in: query
+        description: Limits the list to time entries occuring before the date passed.
+        required: false
+        type: string
+        format: date
+      - name: datemodifiedbegin
+        in: query
+        description: Limits the list to time modified after the date passed.
+        required: false
+        type: string
+        format: date-time
+      - name: datemodifiedend
+        in: query
+        description: Limits the list to time modified before the date passed.
+        required: false
+        type: string
+        format: date-time
+      - name: billable
+        in: query
+        description: Limits the list to time entries marked as either billable or unbillable.
+        required: false
+        type: boolean
+      - name: approved
+        in: query
+        description: Limits the list to time entries on timesheets that have been approved (for 't') or timesheets that have not been approved (for 'f').
+        required: false
+        type: boolean
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: id, t.date, datemodified"
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return time starting from the nth time entry.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of time entries returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - time
+      summary: Add a time
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: time
+        required: false
+        schema:
+          $ref: '#/definitions/time'
+      responses:
+        "200":
+          description: Success
+  /time/{id}/:
+    get:
+      tags:
+      - time
+      summary: Retrieve a time by id.
+      description: "Available to Administrator, Manager, Resource, Executive user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - time
+      summary: Update a time by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: time
+        required: false
+        schema:
+          $ref: '#/definitions/time'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - time
+      summary: Delete a time
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /timer:
+    get:
+      tags:
+      - timer
+      summary: Get one or more timers
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: generaltimers
+        in: query
+        description: "Ordinarily, the list returns a list of active task timers. Appending this to your request returns the list of General Timers. Setting this to true returns the list of General Timers."
+        required: false
+        type: boolean
+      - name: gettimerinfo
+        in: query
+        description: "Setting this to true combines the list to return both general timers AND task timers in one request, and returns extra task information for task timers."
+        required: false
+        type: boolean
+      - name: taskid
+        in: query
+        required: false
+        type: integer
+      - name: personid
+        in: query
+        required: false
+        type: integer
+      - name: projectid
+        in: query
+        required: false
+        type: integer
+      - name: clientid
+        in: query
+        required: false
+        type: integer
+      - name: sortfield
+        in: query
+        description: "Sort the list by any of the following fields: lastupdate"
+        required: false
+        type: string
+      - name: sortdir
+        in: query
+        description: Sets the sort direction of the returned list. Must be either "ASC" or "DESC".
+        required: false
+        type: string
+      - name: offset
+        in: query
+        description: Return timers starting from the nth timer.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of timers returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+    post:
+      tags:
+      - timer
+      summary: Add a timer
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: timer
+        required: false
+        schema:
+          $ref: '#/definitions/timer'
+      responses:
+        "200":
+          description: Success
+  /timer/{id}/:
+    get:
+      tags:
+      - timer
+      summary: Retrieve a timer by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+    put:
+      tags:
+      - timer
+      summary: Update a timer by id.
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: timer
+        required: false
+        schema:
+          $ref: '#/definitions/timer'
+      responses:
+        "200":
+          description: Success
+    delete:
+      tags:
+      - timer
+      summary: Delete a timer
+      description: "Available to Administrator, Manager, Resource user levels."
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: ID of item to delete
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /worktype:
+    get:
+      tags:
+      - worktype
+      summary: Get one or more worktypes
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: active
+        in: query
+        required: false
+        type: boolean
+      - name: offset
+        in: query
+        description: Return worktypes starting from the nth worktype.
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        description: Sets a limit to the amount of worktypes returned in the response.
+        required: false
+        type: integer
+      responses:
+        "200":
+          description: Success
+  /worktype/{id}/:
+    get:
+      tags:
+      - worktype
+      summary: Retrieve a worktype by id.
+      description: Available to Administrator user levels.
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+securityDefinitions:
+  basicAuth:
+    type: basic
+definitions:
+  client:
+    required:
+    - active
+    - datecreated
+    - name
+    properties:
+      name:
+        type: string
+        description: The name of the client
+        maxLength: 255
+      datecreated:
+        type: string
+        format: date
+        description: ""
+      description:
+        type: string
+        description: "The client description/notes area. This field accepts HTML, but certain HTML elements may be stripped out."
+      email:
+        type: string
+        description: "The main client email address. This email can also be part of a person contact, that is a person  profile who cannot login."
+        maxLength: 255
+      website:
+        type: string
+        description: Client website URL.
+        maxLength: 255
+      phone:
+        type: string
+        description: Client phone number.
+        maxLength: 50
+      fax:
+        type: string
+        description: Client fax number.
+        maxLength: 50
+      address:
+        type: string
+        description: The client address.
+      active:
+        type: boolean
+        description: ""
+    xml:
+      name: client
+  expense:
+    required:
+    - date
+    - expense
+    - fee
+    - projectid
+    properties:
+      projectid:
+        type: integer
+        description: ""
+      personid:
+        type: integer
+        description: "Set the person for the expense. If omitted, it defaults to the current person who is saving the expense."
+      date:
+        type: string
+        format: date
+        description: The date that the expense was incurred.
+      expense:
+        type: number
+        format: double
+        description: The amount of the expense is what the expense cost the company. Executive users do not see this value.
+      fee:
+        type: number
+        format: double
+        description: "This is what you are charging the client. If you are marking up the expense, the fee should be greater than the expense value. If you are not marking up the expense, this should be the same as the expense value."
+      note:
+        type: string
+        description: The description of the expense.
+        maxLength: 255
+    xml:
+      name: expense
+  invoice:
+    required:
+    - date
+    - projectid
+    - termid
+    - title
+    properties:
+      projectid:
+        type: integer
+        description: ""
+      date:
+        type: string
+        format: date
+        description: ""
+      termid:
+        type: integer
+        description: ""
+      termother:
+        type: string
+        description: "If you specify the termid as \"other\" (6), you can assign a custom term name to this invoice."
+        maxLength: 255
+      termotherdatedue:
+        type: string
+        format: date
+        description: "If you specify the termid as \"other\" (6), you must specify the custom due date of this invoice."
+      title:
+        type: string
+        description: The invoice title.
+        maxLength: 255
+      description:
+        type: string
+        description: ""
+      addressfrom:
+        type: string
+        description: ""
+      addressto:
+        type: string
+        description: ""
+      purchaseorder:
+        type: string
+        description: ""
+        maxLength: 55
+      tax:
+        type: number
+        format: double
+        description: ""
+      secondtax:
+        type: number
+        format: double
+        description: "For places with dual taxation levels, the value of the secondary tax level."
+      secondtaxcompound:
+        type: boolean
+        description: "For places with dual taxation levels, true if the second tax is compounded, false if the second tax is added."
+      disclaimer:
+        type: string
+        description: ""
+      datebegin:
+        type: string
+        format: date
+        description: "If you wish to create a pre-filled invoice based on work performed, set this to the start date of the time entries you wish to include."
+      dateend:
+        type: string
+        format: date
+        description: "If you wish to create a pre-filled invoice based on work performed, set this to the end date of the time entries you wish to include."
+    xml:
+      name: invoice
+  invoiceitem:
+    required:
+    - amount
+    - invoiceid
+    - name
+    properties:
+      invoiceid:
+        type: integer
+        description: The ID of the invoice to which this item applies. Not settable for existing non-custom items.
+      name:
+        type: string
+        description: The name for this line item.
+        maxLength: 255
+      description:
+        type: string
+        description: The line item description.
+      quantity:
+        type: number
+        format: double
+        description: Settable only for new/custom line items.
+      rate:
+        type: number
+        format: double
+        description: Settable only for new/custom line items.
+      amount:
+        type: number
+        format: double
+        description: "The value for the amount must be the product of the quantity and the rate, if they are both specified. Not settable for existing non-custom items."
+    xml:
+      name: invoiceitem
+  invoicenote:
+    required:
+    - invoiceid
+    - title
+    properties:
+      invoiceid:
+        type: integer
+        description: ""
+      title:
+        type: string
+        description: The title of the note.
+        maxLength: 255
+      note:
+        type: string
+        description: The description of the note.
+      date:
+        type: string
+        format: date
+        description: ""
+    xml:
+      name: invoicenote
+  milestone:
+    required:
+    - complete
+    - datedue
+    - ownerid
+    - projectid
+    - title
+    properties:
+      projectid:
+        type: integer
+        description: The ID of the project the milestone belongs to.
+      ownerid:
+        type: integer
+        description: "The ID of the owner of this milestone. You can submit multiple owners in the form of comma separated integers (e.g. '22,334,222')."
+      title:
+        type: string
+        description: The title of the milestone.
+        maxLength: 255
+      datedue:
+        type: string
+        format: date
+        description: The due date of the milestone. Milestones that are not completed and have a due date in the past are considered overdue. Milestones that are completed that have a due date in the future are considered in progress.
+      description:
+        type: string
+        description: "The milestone description. This field accepts HTML, but certain HTML elements may be stripped out."
+      complete:
+        type: boolean
+        description: Whether the milestone has been completed or not. Milestones that are not completed that have a due date in the past are considered overdue. Milestones that are completed that have a due date in the future are considered in progress.
+    xml:
+      name: milestone
+  milestonenote:
+    required:
+    - milestoneid
+    - note
+    - public
+    properties:
+      milestoneid:
+        type: integer
+        description: The ID of the milestone this note belongs to.
+      note:
+        type: string
+        description: "The body of the milestone note. This field accepts HTML, but certain HTML elements may be stripped out."
+      public:
+        type: boolean
+        description: "If true, this task note will be visible to executive users. For executive users, all notes created are public."
+    xml:
+      name: milestonenote
+  payment:
+    required:
+    - amount
+    - date
+    - projectid
+    - typeid
+    properties:
+      projectid:
+        type: integer
+        description: ""
+      date:
+        type: string
+        format: date
+        description: ""
+      amount:
+        type: number
+        format: double
+        description: ""
+      typeid:
+        type: integer
+        description: ""
+      reference:
+        type: string
+        description: "If the payment type is of type Other, a descriptor for that can be stored here."
+        maxLength: 35
+      note:
+        type: string
+        description: A description for the payment.
+        maxLength: 255
+      invoiceid:
+        type: integer
+        description: ""
+    xml:
+      name: payment
+  person:
+    required:
+    - active
+    - firstname
+    - private
+    properties:
+      clientid:
+        type: integer
+        description: This ID of the client this person is associated with.
+      title:
+        type: string
+        description: ""
+        maxLength: 255
+      firstname:
+        type: string
+        description: ""
+        maxLength: 65
+      lastname:
+        type: string
+        description: ""
+        maxLength: 85
+      allprojects:
+        type: boolean
+        description: "If 'Yes', this person will be added to the project team for all future projects. It does not grant access to existing projects."
+      notes:
+        type: string
+        description: "A short description for this person. This field accepts HTML, but certain HTML elements may be stripped out."
+      private:
+        type: boolean
+        description: Whether this person's contact information is visible to resource- and executive-level users.
+      active:
+        type: boolean
+        description: Whether the person is active or inactive.
+      username:
+        type: string
+        description: "For users that can log in, the username they will log in with. To remove a person's ability to log in, set this field to blank."
+        maxLength: 255
+      password:
+        type: string
+        description: "For users that can log in, the password they will log in with."
+        maxLength: 30
+      email:
+        type: string
+        description: "REQUIRED for adding a new person who can log in. Otherwise, edit a person's contact information using the personcontact resource."
+        maxLength: 255
+      groupid:
+        type: integer
+        description: REQUIRED for adding a person who can log in.
+    xml:
+      name: person
+  personcontact:
+    required:
+    - contactdescriptorid
+    - contacttypeid
+    - personid
+    - value
+    properties:
+      personid:
+        type: integer
+        description: The ID of the person to whom this contact information applies. Keep in mind only administrators may edit other people's contact information.
+      value:
+        type: string
+        description: ""
+      contacttypeid:
+        type: integer
+        description: ""
+      contactdescriptorid:
+        type: integer
+        description: ""
+    xml:
+      name: personcontact
+  project:
+    required:
+    - active
+    - billable
+    - datestart
+    - name
+    properties:
+      clientid:
+        type: integer
+        description: The ID of the client this project belongs to.
+      managerid:
+        type: integer
+        description: "The ID of the person who is manager of this project. Only administrator and manager user levels can be project managers. You can submit multiple managers in the form of comma separated integers (e.g. '22,334,222')."
+      name:
+        type: string
+        description: The name of this project.
+        maxLength: 255
+      description:
+        type: string
+        description: "A short description of the project. This field accepts HTML, but certain HTML elements may be stripped out."
+      datestart:
+        type: string
+        format: date
+        description: The start date of the project.
+      dateend:
+        type: string
+        format: date
+        description: The end date of the project.
+      budget:
+        type: number
+        format: double
+        description: The project budget.
+      billable:
+        type: boolean
+        description: Whether this project is billable or unbillable. This value becomes the default value for time submitted for this project.
+      active:
+        type: boolean
+        description: Whether the project is active or not. Certain plans have a limited number of active accounts available.
+      alert_percent:
+        type: number
+        format: double
+        description: Setting this value will send an alert to the project manager when a certain percentage of the budget is reached.
+    xml:
+      name: project
+  projectmodule:
+    required:
+    - active
+    - projectid
+    properties:
+      projectid:
+        type: integer
+        description: "Once a project ID has been set for a project module, it cannot be changed. It must be deleted for this project and then re-created for the new project."
+      moduleid:
+        type: integer
+        description: "moduleid corresponds to the default module id located on the 'module' resource. ONLY REQUIRED IF adding a default module, NOT REQUIRED if adding a custom module."
+      description:
+        type: string
+        description: ""
+      active:
+        type: boolean
+        description: ""
+      module:
+        type: string
+        description: The name of the module. REQUIRED IF adding a custom module OR converting a default module to a custom module.
+        maxLength: 155
+    xml:
+      name: projectmodule
+  projectnote:
+    required:
+    - note
+    - projectid
+    - secure
+    - title
+    properties:
+      projectid:
+        type: integer
+        description: The project this note belongs to. You can only add new notes to active projects.
+      title:
+        type: string
+        description: The title of the project note.
+        maxLength: 255
+      note:
+        type: string
+        description: "The body of the project note. This field accepts HTML, but certain HTML elements may be stripped out."
+      secure:
+        type: boolean
+        description: Secure project notes are securely encoded before storage; they are also only visible to people with access to secure notes for this project.
+    xml:
+      name: projectnote
+  projectteam:
+    required:
+    - projectid
+    properties:
+      projectid:
+        type: integer
+        description: Limits the list to people belonging to this project.
+    xml:
+      name: projectteam
+  projectworktype:
+    required:
+    - active
+    - hourlyrate
+    - projectid
+    properties:
+      projectid:
+        type: integer
+        description: "Once a project ID has been set for a project worktype, it cannot be changed. It must be deleted for this project and then re-created for the new project."
+      worktypeid:
+        type: integer
+        description: REQUIRED IF adding a project work type from the defaults section. NOT REQUIRED when editing.
+      hourlyrate:
+        type: number
+        format: double
+        description: REQUIRED IF adding a custom work type.
+      esttime:
+        type: number
+        format: double
+        description: ""
+      active:
+        type: boolean
+        description: ""
+      worktype:
+        type: string
+        description: REQUIRED IF adding a custom project worktype. The name of the work type.
+        maxLength: 155
+    xml:
+      name: projectworktype
+  request:
+    required:
+    - personid
+    - priorityid
+    - title
+    properties:
+      personid:
+        type: integer
+        description: The ID of the owner of the work request.
+      projectid:
+        type: integer
+        description: The project the work request belongs to.
+      priorityid:
+        type: integer
+        description: The ID of the priority of the work request. Please see the taskpriority resource for more information.
+      title:
+        type: string
+        description: The work request title.
+        maxLength: 255
+      datedue:
+        type: string
+        format: date
+        description: "The date on which the work request is due. If this is left blank, the date will default to one week ahead"
+      description:
+        type: string
+        description: "The work request description. This field accepts HTML, but certain HTML elements may be stripped out."
+    xml:
+      name: request
+  task:
+    required:
+    - dateopen
+    - moduleid
+    - ownerid
+    - priorityid
+    - projectid
+    - statusid
+    - title
+    properties:
+      assigneeid:
+        type: integer
+        description: "Allows you to specify the task assignee. You can submit multiple assignees in the form of comma separated integers (e.g. '22,334,222')."
+      followerid:
+        type: integer
+        description: "Allows you to specify the task followers. You can submit multiple followers in the form of comma separated integers (e.g. '22,334,222')."
+      milestoneid:
+        type: integer
+        description: The milestone the task belongs to.
+      statusid:
+        type: integer
+        description: The corresponding status of the task. Tasks that have a status other than closed and a due date in the past are considered overdue.
+      projectid:
+        type: integer
+        description: The project the task belongs to.
+      moduleid:
+        type: integer
+        description: The module the task belongs to.
+      title:
+        type: string
+        description: The task title.
+        maxLength: 255
+      summary:
+        type: string
+        description: "The task summary. This field accepts HTML, but certain HTML elements may be stripped out."
+      dateopen:
+        type: string
+        format: date
+        description: The start date of the task.
+      datedue:
+        type: string
+        format: date
+        description: The due date of the task. Tasks that have a due date in the past that don't have the status set to closed are considered overdue.
+      dateclosed:
+        type: string
+        format: date
+        description: The date on which the task was closed.
+      estimate:
+        type: number
+        format: double
+        description: The estimated hours for the task.
+      ownerid:
+        type: integer
+        description: "The ID of the owner of the task. You can submit multiple owners in the form of comma separated integers (e.g. '22,334,222'). NOTE: Resource-level users may not set the owner of a new task to someone other than themselves, and they are not allowed to change the owner of an existing task."
+      priorityid:
+        type: integer
+        description: The ID of the priority of the task.
+    xml:
+      name: task
+  tasknote:
+    required:
+    - note
+    - public
+    - taskid
+    properties:
+      taskid:
+        type: integer
+        description: The ID of the task this note belongs to.
+      note:
+        type: string
+        description: "The body of the task note. This field accepts HTML, but certain HTML elements may be stripped out."
+      public:
+        type: boolean
+        description: "If true, this task note will be visible to executive users. For executive users, all notes created are public."
+    xml:
+      name: tasknote
+  time:
+    required:
+    - billable
+    - date
+    - personid
+    - time
+    - worktypeid
+    properties:
+      projectid:
+        type: integer
+        description: "For adding general time, projectid is required, as is moduleid; the taskid field must be left blank (otherwise the entry will be interpreted as task time). For adding time associated with a task, this field, along with the moduleid field, may be left blank, as its values will be ignored."
+      moduleid:
+        type: integer
+        description: "For adding general time, moduleid is required, as is projectid; the taskid field must be left blank (otherwise the entry will be interpreted as task time). For adding time associated with a task, this field, along with the projectid field, may be left blank, as its values will be ignored."
+      taskid:
+        type: integer
+        description: "For adding time associated with a task, taskid is required. Since the task contains project and module information, moduleid and projectid may be left blank. By passing taskid, any values you pass for projectid and/or moduleid will be ignored."
+      worktypeid:
+        type: integer
+        description: "The worktypeid you pass should be associated with the project you pass, or in the case of task time, the project of the task you pass."
+      personid:
+        type: integer
+        description: "The personid you pass should be associated with the project you pass, or in the case of task time, the project of the task you pass."
+      date:
+        type: string
+        format: date
+        description: ""
+      time:
+        type: number
+        format: double
+        description: The time in decimal format.
+      description:
+        type: string
+        description: ""
+      billable:
+        type: boolean
+        description: ""
+      datemodified:
+        type: string
+        format: date-time
+        description: The date this time entry was modified.
+    xml:
+      name: time
+  timer:
+    required:
+    - personid
+    properties:
+      taskid:
+        type: integer
+        description: "The ID of the task this timer is associated with. If left blank, this timer will be a General Timer"
+      personid:
+        type: integer
+        description: The ID of the person this timer is associated with.
+      starttime:
+        type: string
+        format: date-time
+        description: "REQUIRED IF time field is blank. Setting this field indicates that a timer is running. If missing, server time will be used when creating a new timer."
+      time:
+        type: number
+        format: double
+        description: REQUIRED IF starttime field is blank.
+      timelapsed:
+        type: number
+        format: double
+        description: Time elapsed since timer was started. This field is ready only.
+      name:
+        type: string
+        description: A description you want to apply to the timer.
+        maxLength: 255
+      lastupdate:
+        type: string
+        format: date
+        description: The date on which the timer was last started or stopped
+    xml:
+      name: timer
+externalDocs:
+  description: Find out more about Intervals
+  url: https://www.myintervals.com

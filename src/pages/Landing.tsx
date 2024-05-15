@@ -11,12 +11,12 @@ import { RootStackParamList } from './navigation';
 type Props = NativeStackScreenProps<RootStackParamList, 'Landing'>;
 
 export default function Landing({ navigation }: Props) {
-  const { apiToken, loading: userLoading, setApiToken } = useUser();
+  const { apiToken, loading: userLoading, saveApiToken } = useUser();
 
   useEffect(() => {
     if (apiToken) {
       console.log('TODO: Fetch user/handshake');
-      setApiToken('');
+      saveApiToken('');
     } else {
       navigation.replace('TokenSetup', {});
     }

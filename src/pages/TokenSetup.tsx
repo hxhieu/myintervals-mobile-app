@@ -14,10 +14,9 @@ import { useUser } from '../services/user';
 
 const TokenSetup = () => {
   const [apiTokenForm, setApiTokenForm] = useState<string>();
-  const [showToast, setShowToast] = useState(false);
   const txtApiTokenRef = useRef<TextFieldRef>();
 
-  const { apiToken, loading, setApiToken, verifyApiToken } = useUser();
+  const { apiToken, loading, saveApiToken, verifyApiToken } = useUser();
 
   const btnText = useMemo(() => (loading ? 'Processing...' : 'OK'), [loading]);
 
@@ -25,12 +24,10 @@ const TokenSetup = () => {
     if (!txtApiTokenRef.current?.validate()) {
       return;
     }
-    setShowToast(false);
-    const valid = await verifyApiToken(apiTokenForm || '');
-    if (!valid) {
-      setShowToast(true);
+    const user = await verifyApiToken(apiTokenForm || '');
+    if (user) {
+      console.log(user);
     }
-    console.log(valid);
   };
 
   return (
@@ -54,14 +51,6 @@ const TokenSetup = () => {
         />
         <Button label={btnText} onPress={onSave} disabled={loading} />
       </View>
-      <Toast
-        visible={showToast}
-        position="bottom"
-        autoDismiss={5000}
-        message="Failed to fetch/verify the token"
-        backgroundColor="pink"
-        onDismiss={() => setShowToast(false)}
-      />
     </>
   );
 };

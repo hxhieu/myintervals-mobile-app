@@ -6,11 +6,13 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "swagger-gen": " swagger-typescript-api -p ./api-resources/MyIntervals-intervals-1-resolved.yaml -o ./src/api --axios --modular --extract-request-params --extract-request-body --extract-response-body --extract-response-error --unwrap-response-data --type-prefix Mi"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
+    "axios": "^1.6.8",
     "expo": "~51.0.4",
     "expo-secure-store": "~13.0.1",
     "expo-status-bar": "~1.12.1",
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "swagger-typescript-api": "^13.0.3",
     "typescript": "~5.3.3"
   },
   "private": true
