@@ -1,4 +1,8 @@
 export type RootStackParamList = {
-  Landing: {};
-  TokenSetup: {};
+  Init: {};
+  Login: {
+    token?: string;
+    alreadyLoggedIn?: boolean;
+  };
+  Dashboard: {};
 };

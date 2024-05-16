@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getItemAsync, setItemAsync } from 'expo-secure-store';
+import { getItemAsync, setItemAsync, deleteItemAsync } from 'expo-secure-store';
 import { Me } from '../api/Me';
 import { executeApi } from './api-wrapper';
 import { API_TOKEN_STORE_KEY } from './store';
@@ -10,6 +10,7 @@ interface UserServiceHook {
   apiToken?: string;
   user?: GetUserResponse;
   verifyApiToken(token: string, forceSave?: boolean): Promise<boolean>;
+  clearStorage(): Promise<void>;
 }
 
 const useUser = (): UserServiceHook => {
@@ -55,11 +56,18 @@ const useUser = (): UserServiceHook => {
     return success;
   };
 
+  const clearStorage = async () => {
+    await deleteItemAsync(API_TOKEN_STORE_KEY);
+    setApiTokenState(undefined);
+    setUser(undefined);
+  };
+
   return {
     loading,
     apiToken: apiTokenState,
     user,
     verifyApiToken,
+    clearStorage,
   };
 };
 

@@ -6,6 +6,7 @@ let toast: any;
 const defaultOptions: ToastOptions = {
   duration: 5000,
   hideOnPress: true,
+  position: 2,
 };
 
 const errorToast = (err: any, timeout?: number) => {

@@ -4,14 +4,16 @@ import {
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
+import { Button } from 'react-native-ui-lib';
 import { useColorScheme } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootSiblingParent } from 'react-native-root-siblings';
-import Landing from './src/pages/Landing';
-import TokenSetup from './src/pages/TokenSetup';
+
+import { Init, Login } from './src/pages';
 import { RootStackParamList } from './src/pages/navigation';
 
 import './src/styles/theme';
+import { Dashboard } from './src/pages/Dashboard';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,16 +22,24 @@ export default function App() {
   return (
     <RootSiblingParent>
       <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack.Navigator initialRouteName="Landing">
+        <Stack.Navigator initialRouteName="Init">
           <Stack.Screen
-            name="Landing"
-            component={Landing}
+            name="Init"
+            component={Init}
             options={{ title: 'Initialising' }}
           />
           <Stack.Screen
-            name="TokenSetup"
-            component={TokenSetup}
+            name="Login"
+            component={Login}
             options={{ title: 'Setting you up' }}
+          />
+          <Stack.Screen
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              title: 'Dashboard',
+              headerRight: () => <Button label="Me" />,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

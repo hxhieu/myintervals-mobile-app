@@ -29,7 +29,7 @@ Colors.loadSchemes({
 });
 
 Typography.loadTypographies({
-  txtDefault: { fontSize: 24, fontWeight: '300', lineHeight: 80 },
+  txtDefault: { fontSize: 20, fontWeight: '300', lineHeight: 80 },
 });
 
 ThemeManager.setComponentTheme('Text', {
