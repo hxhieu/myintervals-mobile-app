@@ -1,6 +1,8 @@
 import { AxiosError } from 'axios';
 import { getItemAsync } from 'expo-secure-store';
+
 import { API_TOKEN_STORE_KEY } from './store';
+import { errorToast } from './toast';
 
 // TODO: Match with swagger-gen ctor?
 type ApiCtor = { new (...args: any[]): any };
@@ -28,8 +30,9 @@ const executeApi = async <T>(
     }
   } catch (e) {
     const err = e as AxiosError;
+    errorToast(err);
+
     // TODO: Telemetry?
-    console.error(err);
   } finally {
     if (typeof cleanUp === 'function') {
       await cleanUp();

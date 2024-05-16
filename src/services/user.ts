@@ -1,5 +1,5 @@
-import { getItemAsync, setItemAsync } from 'expo-secure-store';
 import { useEffect, useState } from 'react';
+import { getItemAsync, setItemAsync } from 'expo-secure-store';
 import { Me } from '../api/Me';
 import { executeApi } from './api-wrapper';
 import { API_TOKEN_STORE_KEY } from './store';
@@ -7,33 +7,29 @@ import { GetMeResponse, GetUserResponse } from '../models';
 
 interface UserServiceHook {
   loading: boolean;
-  apiToken: string | null;
-  saveApiToken(token: string): Promise<void>;
-  verifyApiToken(token: string): Promise<GetUserResponse | undefined>;
+  apiToken?: string;
+  user?: GetUserResponse;
+  verifyApiToken(token: string, forceSave?: boolean): Promise<boolean>;
 }
 
 const useUser = (): UserServiceHook => {
-  const [apiTokenState, setApiTokenState] = useState<string | null>(null);
+  const [apiTokenState, setApiTokenState] = useState<string>();
+  const [user, setUser] = useState<GetUserResponse>();
   const [loading, setLoading] = useState<boolean>(true);
 
   // Initial load user from the store
   useEffect(() => {
     getItemAsync(API_TOKEN_STORE_KEY)
-      .then((token) => setApiTokenState(token))
+      .then((token) => setApiTokenState(token || undefined))
       .finally(() => {
         setLoading(false);
       });
   }, []);
 
-  const saveApiToken = async (token: string) => {
-    // Save to store
-    await setItemAsync(API_TOKEN_STORE_KEY, token);
-    setApiTokenState(token);
-  };
-
   const verifyApiToken = async (
     token: string,
-  ): Promise<GetUserResponse | undefined> => {
+    forceSave?: boolean,
+  ): Promise<boolean> => {
     setLoading(true);
     const me = await executeApi<GetMeResponse>(
       Me,
@@ -45,13 +41,24 @@ const useUser = (): UserServiceHook => {
       token,
     );
 
-    return me?.me[0];
+    const success = !!me;
+
+    // Update store
+    if (success && forceSave) {
+      await setItemAsync(API_TOKEN_STORE_KEY, token);
+    }
+
+    // Update state
+    setApiTokenState(token);
+    setUser(me?.me[0]);
+
+    return success;
   };
 
   return {
     loading,
     apiToken: apiTokenState,
-    saveApiToken,
+    user,
     verifyApiToken,
   };
 };
