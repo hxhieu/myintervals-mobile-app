@@ -13,6 +13,7 @@ import { Init, Login, Dashboard, Profile } from './src/pages';
 import { RootStackParamList } from './src/pages/navigation';
 
 import './src/styles/theme';
+import './src/styles/icons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Button } from 'react-native-ui-lib';
+import { View, Button, Image } from 'react-native-ui-lib';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -16,7 +16,11 @@ const dashboard = ({ navigation }: Props) => {
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => navigation.push('Profile')} label="Me" />
+        <Button
+          onPress={() => navigation.push('Profile')}
+          style={{ backgroundColor: 'transparent', margin: 0, padding: 0 }}
+          iconSource={() => <Image assetName="user" width={32} height={32} />}
+        ></Button>
       ),
     });
   }, [navigation, apiToken]);
