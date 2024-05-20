@@ -9,11 +9,10 @@ import { useColorScheme } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
-import { Init, Login } from './src/pages';
+import { Init, Login, Dashboard, Profile } from './src/pages';
 import { RootStackParamList } from './src/pages/navigation';
 
 import './src/styles/theme';
-import { Dashboard } from './src/pages/Dashboard';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -39,6 +38,13 @@ export default function App() {
             options={{
               title: 'Dashboard',
               headerRight: () => <Button label="Me" />,
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: 'Profile',
             }}
           />
         </Stack.Navigator>

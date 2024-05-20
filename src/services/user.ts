@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getItemAsync, setItemAsync, deleteItemAsync } from 'expo-secure-store';
+import { atom, useAtom } from 'jotai';
 import { Me } from '../api/Me';
 import { executeApi } from './api-wrapper';
 import { API_TOKEN_STORE_KEY } from './store';
@@ -13,12 +14,15 @@ interface UserServiceHook {
   clearStorage(): Promise<void>;
 }
 
+// Global state
+const userStore = atom<GetUserResponse | undefined>(undefined);
+
 const useUser = (): UserServiceHook => {
   const [apiTokenState, setApiTokenState] = useState<string>();
-  const [user, setUser] = useState<GetUserResponse>();
+  const [user, setUser] = useAtom<GetUserResponse | undefined>(userStore);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Initial load user from the store
+  // Initial load api token from the store
   useEffect(() => {
     getItemAsync(API_TOKEN_STORE_KEY)
       .then((token) => setApiTokenState(token || undefined))
@@ -27,6 +31,8 @@ const useUser = (): UserServiceHook => {
       });
   }, []);
 
+  // Verify needs to be called every app start
+  // To ensure token validity
   const verifyApiToken = async (
     token: string,
     forceSave?: boolean,

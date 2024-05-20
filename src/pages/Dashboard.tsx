@@ -1,18 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  View,
-  Button,
-  TextField,
-  TextFieldRef,
-  Text,
-  Colors,
-} from 'react-native-ui-lib';
+import { useEffect } from 'react';
+import { View, Button } from 'react-native-ui-lib';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUser } from '../services/user';
 import { RootStackParamList } from './navigation';
-import { errorToast } from '../services/toast';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
@@ -24,12 +16,7 @@ const dashboard = ({ navigation }: Props) => {
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
       headerRight: () => (
-        <Button
-          onPress={() =>
-            navigation.push('Login', { token: apiToken, alreadyLoggedIn: true })
-          }
-          label="Me"
-        />
+        <Button onPress={() => navigation.push('Profile')} label="Me" />
       ),
     });
   }, [navigation, apiToken]);

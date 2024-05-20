@@ -43,7 +43,7 @@ const login = ({
     if (!token) {
       return setCheckTokenLoading(false);
     }
-    verifyApiToken(token)
+    verifyApiToken(token, true)
       .then(setShowPostVerify)
       .catch(errorToast)
       .finally(() => {
@@ -61,16 +61,12 @@ const login = ({
 
   const signOff = async () => {
     await clearStorage();
-    if (alreadyLoggedIn) {
-      navigation.replace('Dashboard', {});
-      return;
-    }
     setShowPostVerify(false);
     setApiTokenForm(undefined);
   };
 
   const signIn = () => {
-    navigation.replace('Dashboard', {});
+    navigation.replace('Dashboard');
   };
 
   return (

@@ -1,8 +1,9 @@
 export type RootStackParamList = {
-  Init: {};
+  Init: undefined;
   Login: {
     token?: string;
     alreadyLoggedIn?: boolean;
   };
-  Dashboard: {};
+  Dashboard: undefined;
+  Profile: undefined;
 };
