@@ -1,28 +1,55 @@
-import { NavigationContainer } from '@react-navigation/native';
+import './setup';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from '@react-navigation/native';
+import { Button } from 'react-native-ui-lib';
+import { useColorScheme } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Landing from './src/pages/Landing';
-import TokenSetup from './src/pages/TokenSetup';
+import { RootSiblingParent } from 'react-native-root-siblings';
+
+import { Init, Login, Dashboard, Profile } from './src/pages';
 import { RootStackParamList } from './src/pages/navigation';
 
 import './src/styles/theme';
+import './src/styles/icons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const scheme = useColorScheme();
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Landing">
-        <Stack.Screen
-          name="Landing"
-          component={Landing}
-          options={{ title: 'Initialising' }}
-        />
-        <Stack.Screen
-          name="TokenSetup"
-          component={TokenSetup}
-          options={{ title: 'Setting you up' }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <RootSiblingParent>
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack.Navigator initialRouteName="Init">
+          <Stack.Screen
+            name="Init"
+            component={Init}
+            options={{ title: 'Initialising' }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ title: 'Setting you up' }}
+          />
+          <Stack.Screen
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              title: 'Dashboard',
+              headerRight: () => <Button label="Me" />,
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: 'Profile',
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </RootSiblingParent>
   );
 }

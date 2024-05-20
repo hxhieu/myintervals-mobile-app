@@ -8,19 +8,16 @@ import { useUser } from '../services/user';
 import { shellStyles } from '../styles';
 import { RootStackParamList } from './navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Landing'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Init'>;
 
-export default function Landing({ navigation }: Props) {
-  const { apiToken, loading: userLoading, saveApiToken } = useUser();
+const Init = ({ navigation }: Props) => {
+  const { apiToken, loading: userLoading } = useUser();
 
   useEffect(() => {
-    if (apiToken) {
-      console.log('TODO: Fetch user/handshake');
-      saveApiToken('');
-    } else {
-      navigation.replace('TokenSetup', {});
+    if (!userLoading) {
+      navigation.replace('Login', { token: apiToken });
     }
-  }, [apiToken]);
+  }, [userLoading]);
 
   return (
     <View style={shellStyles.container}>
@@ -28,4 +25,6 @@ export default function Landing({ navigation }: Props) {
       {userLoading && <LoaderScreen />}
     </View>
   );
-}
+};
+
+export { Init };
