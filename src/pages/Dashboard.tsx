@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
-import { View, Button, Image } from 'react-native-ui-lib';
+import { View, Button, Image, Text } from 'react-native-ui-lib';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUser } from '../services/user';
+import { useDashboard } from '../services/dashboard';
 import { RootStackParamList } from './navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
 const dashboard = ({ navigation }: Props) => {
   const { apiToken } = useUser();
+  const { weekRecords, setWeek } = useDashboard();
 
   useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
@@ -25,7 +27,15 @@ const dashboard = ({ navigation }: Props) => {
     });
   }, [navigation, apiToken]);
 
-  return <View flex padding-20 paddingL-40 paddingR-40 bg-screenBG></View>;
+  useEffect(() => {
+    setWeek();
+  }, []);
+
+  return (
+    <View flex padding-20 paddingL-40 paddingR-40 bg-screenBG>
+      <Text textColor>{JSON.stringify(weekRecords)}</Text>
+    </View>
+  );
 };
 
 const Dashboard = gestureHandlerRootHOC(dashboard);

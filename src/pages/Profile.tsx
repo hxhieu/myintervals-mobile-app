@@ -8,10 +8,10 @@ import { RootStackParamList } from './navigation';
 type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
 const profile = ({ navigation }: Props) => {
-  const { user, clearStorage } = useUser();
+  const { user, signOut } = useUser();
 
   const signOff = async () => {
-    await clearStorage();
+    await signOut();
     navigation.popToTop();
     navigation.replace('Login', {});
   };
