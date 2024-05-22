@@ -22,7 +22,7 @@ const useUser = (): UserServiceHook => {
   const [apiTokenState, setApiTokenState] = useState<string>();
   const [user, setUser] = useAtom<GetUserResponse | undefined>(userStore);
   const [loading, setLoading] = useState<boolean>(true);
-  const { clearWeek } = useDashboard();
+  const { clearDashboard } = useDashboard();
 
   // Initial load api token from the store
   useEffect(() => {
@@ -40,7 +40,7 @@ const useUser = (): UserServiceHook => {
     forceSave?: boolean,
   ): Promise<boolean> => {
     setLoading(true);
-    const me = await executeApi<GetMeResponse>(
+    const me = await executeApi<GetMeResponse, any>(
       Me,
       'getMe',
       undefined,
@@ -68,7 +68,7 @@ const useUser = (): UserServiceHook => {
     await deleteItemAsync(API_TOKEN_STORE_KEY);
     setApiTokenState(undefined);
     setUser(undefined);
-    clearWeek();
+    clearDashboard();
   };
 
   return {

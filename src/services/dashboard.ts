@@ -4,76 +4,98 @@ import { DATE_FORMAT } from './const';
 import { executeApi } from './api-wrapper';
 import { GetTimeResponse, TimeRecord } from '../models/GetTimeResponse';
 import { atom, useAtom } from 'jotai';
+import { useEffect, useState } from 'react';
+import { MiTimeListParams } from '../api/data-contracts';
 
 const TIME_RECORD_TIME_OUT = 30000; // Invalid the cache after
-const DEFAULT_PAST_DATE = new Date(1, 1, 1900);
+const DEFAULT_PAST_DATE = new Date(1900, 1, 1);
 
 interface DashboardServiceHook {
-  setWeek(weekStart?: string): Promise<void>;
-  clearWeek(): void;
+  loading: boolean;
+  prepareDashboard(): Promise<void>;
+  clearDashboard(): void;
   weekRecords: TimeRecord[];
 }
 
+let lastFetch = new Date(1900, 1, 1);
+
 const weekStartStore = atom<string>('');
 const weekRecordStore = atom<TimeRecord[]>([]);
-const weekRecordLastFetchStore = atom<Date>(DEFAULT_PAST_DATE);
 
 const fetchTime = async (start: string, end: string): Promise<TimeRecord[]> => {
-  const res = await executeApi<GetTimeResponse>(Time, 'timeList', {
-    activeonly: true,
-    datebegin: start,
-    dateend: end,
-  });
+  const res = await executeApi<GetTimeResponse, MiTimeListParams>(
+    Time,
+    'timeList',
+    {
+      activeonly: true,
+      datebegin: start,
+      dateend: end,
+      sortdir: 'asc',
+      sortfield: 't.date',
+    },
+  );
   return (res?.time || []).map((x) => ({
     ...x,
-    // Map day of week
-    weekDay: dayjs(x.date).day(),
+    weekDay: dayjs(x.date).weekday(),
+    weekDayName: dayjs(x.date).format('ddd'),
+    canBill: (x.billable as unknown) === 't',
   }));
 };
 
 const useDashboard = (): DashboardServiceHook => {
   const [weekRecords, setWeekRecords] = useAtom(weekRecordStore);
-  const [lastFetch, setLastFetch] = useAtom(weekRecordLastFetchStore);
   const [weekStart, setWeekStart] = useAtom(weekStartStore);
+  const [loading, setLoading] = useState(false);
 
-  const setWeek = async (start?: string) => {
-    // Work out the dates range
-    const date = dayjs(start, DATE_FORMAT);
-    const startDate = date.isValid()
-      ? date.startOf('week')
-      : dayjs().startOf('week');
-    const begin = startDate.format(DATE_FORMAT);
+  // Refresh dashboard records
+  useEffect(() => {
+    const begin = dayjs(weekStart);
 
-    // Still have a valid cache
     if (
-      begin === weekStart &&
+      !begin.isValid() ||
       new Date().getTime() - lastFetch.getTime() < TIME_RECORD_TIME_OUT
     ) {
       return;
     }
 
-    console.log('fetching dashboard...');
+    lastFetch = new Date();
 
-    const records = await fetchTime(
-      begin,
-      startDate.add(7, 'day').format(DATE_FORMAT),
-    );
+    console.log(`fetching week records: ${weekStart}`);
 
+    setLoading(true);
+
+    fetchTime(
+      begin.format(DATE_FORMAT),
+      begin.add(7, 'day').format(DATE_FORMAT),
+    )
+      .then((records: TimeRecord[]) => {
+        setWeekRecords(records);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [weekStart, lastFetch]);
+
+  const prepareDashboard = async () => {
+    console.log('prepareDashboard');
+    const date = dayjs(weekStart, DATE_FORMAT);
+    const startDate = date.isValid()
+      ? date.startOf('week')
+      : dayjs().startOf('week');
     // Update the state
-    setWeekStart(begin);
-    setWeekRecords(records);
-    setLastFetch(new Date());
+    setWeekStart(startDate.format(DATE_FORMAT));
   };
 
-  const clearWeek = () => {
+  const clearDashboard = () => {
     setWeekStart('');
     setWeekRecords([]);
-    setLastFetch(DEFAULT_PAST_DATE);
+    lastFetch = DEFAULT_PAST_DATE;
   };
 
   return {
-    setWeek,
-    clearWeek,
+    loading,
+    prepareDashboard,
+    clearDashboard,
     weekRecords,
   };
 };
