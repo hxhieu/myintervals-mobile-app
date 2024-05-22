@@ -8,13 +8,13 @@ import { errorToast } from './toast';
 type ApiCtor = { new (...args: any[]): any };
 type ApiMethod = string;
 
-const executeApi = async <T>(
+const executeApi = async <TRes, TReq>(
   ctor: ApiCtor,
   method: ApiMethod,
-  methodArgs?: any,
+  methodArgs?: TReq,
   cleanUp?: () => Promise<void>,
   token?: string,
-): Promise<T | undefined> => {
+): Promise<TRes | undefined> => {
   try {
     const apiToken = token ?? (await getItemAsync(API_TOKEN_STORE_KEY));
     const api = new ctor({
@@ -25,7 +25,7 @@ const executeApi = async <T>(
     });
     const apiMethod = api[method];
     if (typeof apiMethod === 'function') {
-      const data: T = await apiMethod(methodArgs);
+      const data: TRes = await apiMethod(methodArgs);
       return data;
     }
   } catch (e) {

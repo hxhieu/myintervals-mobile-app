@@ -28,7 +28,7 @@ const login = ({
   const txtApiTokenRef = useRef<TextFieldRef>();
   const [showPostVerify, setShowPostVerify] = useState(false);
 
-  const { user, loading, verifyApiToken, clearStorage } = useUser();
+  const { user, loading, verifyApiToken, signOut } = useUser();
 
   const btnVerifyText = useMemo(
     () => (loading ? 'Processing...' : 'OK'),
@@ -60,7 +60,7 @@ const login = ({
   };
 
   const signOff = async () => {
-    await clearStorage();
+    await signOut();
     setShowPostVerify(false);
     setApiTokenForm(undefined);
   };
