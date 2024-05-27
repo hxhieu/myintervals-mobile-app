@@ -8,6 +8,7 @@ import { BarChart } from 'react-native-gifted-charts';
 import { useUser } from '../services/user';
 import { useDashboard } from '../services/dashboard';
 import { RootStackParamList } from './navigation';
+import { WeekPicker } from '../components/WeekPicker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
@@ -29,7 +30,7 @@ const getDefaultStackBar = () => ({
 
 const dashboard = ({ navigation }: Props) => {
   const { apiToken } = useUser();
-  const { loading, weekRecords, prepareDashboard } = useDashboard();
+  const { loading, weekRecords, prepareDashboard, weekStart } = useDashboard();
 
   const chartData = useMemo(() => {
     const aggregatedData = weekRecords.reduce(
@@ -77,19 +78,30 @@ const dashboard = ({ navigation }: Props) => {
   }, []);
 
   return (
-    <View flex paddingT-20 paddingB-20 bg-screenBG>
+    <View flex paddingT-10 paddingB-10 bg-screenBG>
       {loading && <LoaderScreen />}
       {!loading && (
-        <BarChart
-          stackData={chartData}
-          rulesType="dot"
-          barWidth={unitWidth * (3 / 4)}
-          stepValue={1}
-          spacing={unitWidth * (1 / 4)}
-          rulesColor="#666"
-          maxValue={8}
-          rotateLabel
-        />
+        <>
+          <View>
+            <WeekPicker
+              currentWeek={weekStart}
+              onWeekChanged={(weekStart) => prepareDashboard(weekStart, true)}
+            />
+          </View>
+          <View>
+            <BarChart
+              stackData={chartData}
+              rulesType="dot"
+              barWidth={unitWidth * (3 / 4)}
+              stepValue={1}
+              spacing={unitWidth * (1 / 4)}
+              rulesColor="#666"
+              maxValue={8}
+              rotateLabel
+              stepHeight={20}
+            />
+          </View>
+        </>
       )}
     </View>
   );
