@@ -5,4 +5,5 @@ Assets.loadAssetsGroup('icons', {
   prev: require('../../assets/icons/arrow-back.png'),
   next: require('../../assets/icons/arrow-next.png'),
   calendar: require('../../assets/icons/calendar.png'),
+  home: require('../../assets/icons/home.png'),
 });

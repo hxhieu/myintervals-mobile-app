@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Dimensions } from 'react-native';
-import { View, Button, Image, LoaderScreen } from 'react-native-ui-lib';
+import { View, Button, Image } from 'react-native-ui-lib';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BarChart } from 'react-native-gifted-charts';
@@ -9,6 +9,7 @@ import { useUser } from '../services/user';
 import { useDashboard } from '../services/dashboard';
 import { RootStackParamList } from './navigation';
 import { WeekPicker } from '../components/WeekPicker';
+import { useTopProgressBar } from '../components/TopProgressBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
@@ -31,6 +32,7 @@ const getDefaultStackBar = () => ({
 const dashboard = ({ navigation }: Props) => {
   const { apiToken } = useUser();
   const { loading, weekRecords, prepareDashboard, weekStart } = useDashboard();
+  const { setActiveLoader } = useTopProgressBar();
 
   const chartData = useMemo(() => {
     const aggregatedData = weekRecords.reduce(
@@ -59,6 +61,8 @@ const dashboard = ({ navigation }: Props) => {
     return aggregatedData;
   }, [weekRecords]);
 
+  useEffect(() => setActiveLoader(loading), [loading]);
+
   useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
@@ -79,30 +83,25 @@ const dashboard = ({ navigation }: Props) => {
 
   return (
     <View flex paddingT-10 paddingB-10 bg-screenBG>
-      {loading && <LoaderScreen />}
-      {!loading && (
-        <>
-          <View>
-            <WeekPicker
-              currentWeek={weekStart}
-              onWeekChanged={(weekStart) => prepareDashboard(weekStart, true)}
-            />
-          </View>
-          <View>
-            <BarChart
-              stackData={chartData}
-              rulesType="dot"
-              barWidth={unitWidth * (3 / 4)}
-              stepValue={1}
-              spacing={unitWidth * (1 / 4)}
-              rulesColor="#666"
-              maxValue={8}
-              rotateLabel
-              stepHeight={20}
-            />
-          </View>
-        </>
-      )}
+      <View>
+        <WeekPicker
+          currentWeek={weekStart}
+          onWeekChanged={(weekStart) => prepareDashboard(weekStart, true)}
+        />
+      </View>
+      <View>
+        <BarChart
+          stackData={chartData}
+          rulesType="dot"
+          barWidth={unitWidth * (3 / 4)}
+          stepValue={1}
+          spacing={unitWidth * (1 / 4)}
+          rulesColor="#666"
+          maxValue={8}
+          rotateLabel
+          stepHeight={20}
+        />
+      </View>
     </View>
   );
 };

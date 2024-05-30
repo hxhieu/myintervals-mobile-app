@@ -17,11 +17,13 @@ interface UserServiceHook {
 
 // Global state
 const userStore = atom<GetUserResponse | undefined>(undefined);
+const loadingStore = atom<boolean>(false);
+const apiTokenStore = atom<string | undefined>(undefined);
 
 const useUser = (): UserServiceHook => {
-  const [apiTokenState, setApiTokenState] = useState<string>();
+  const [apiTokenState, setApiTokenState] = useAtom(apiTokenStore);
   const [user, setUser] = useAtom<GetUserResponse | undefined>(userStore);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useAtom(loadingStore);
   const { clearDashboard } = useDashboard();
 
   // Initial load api token from the store

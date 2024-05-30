@@ -14,6 +14,7 @@ import { RootStackParamList } from './src/pages/navigation';
 
 import './src/styles/theme';
 import './src/styles/icons';
+import { TopProgressBar } from './src/components/TopProgressBar';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ export default function App() {
   const scheme = useColorScheme();
   return (
     <RootSiblingParent>
+      <TopProgressBar />
       <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack.Navigator initialRouteName="Init">
           <Stack.Screen
